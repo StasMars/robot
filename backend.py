@@ -8,15 +8,20 @@ import asyncio
 
 app = FastAPI(
     title="Добрый день! Меня зовут Станислав",
-    summary="Это мое тестовое задание для ИТ-стажировки Гринатом (Python разработчик RPA)"
+    summary="Это мое тестовое задание для ИТ-стажировки Гринатом (Python разработчик RPA)",
+    license_info={
+        "name": "Вернуться на главную",
+        "url": "http://127.0.0.1:8000"
+    },
 )
 robot_queue = asyncio.Queue()
 
 
-conn = sqlite3.connect('robot_data.db') # Подключение к БД
+# Подключение к БД
+conn = sqlite3.connect('robot_data.db') 
 c = conn.cursor()
 
-
+# Создание таблицы в БД
 c.execute('''CREATE TABLE IF NOT EXISTS robot_runs(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             start_time TEXT,
@@ -33,7 +38,7 @@ def log_robot_run(start_time, duration, start_from):
 
 
 
-
+#Главная страница
 @app.get('/', tags=["Приветствие"])
 async def greeting():
     html_file_path = Path(__file__).parent / 'templates/index.html'  # Путь к файлу HTML
@@ -48,8 +53,9 @@ async def start_robot(start_from: int):
     log_robot_run(start_time, duration.total_seconds(), start_from)
 
 
+# Запуск робота (Запуск асинхронной функции robot с указанным start_from)
 @app.post("/start_robot/", tags=["Работа с роботом"], summary="Запуск робота")
-async def start_robot_endpoint(start_from: int = 0): # Запуск робота (Запуск асинхронной функции robot с указанным start_from)
+async def start_robot_endpoint(start_from: int = 0):
     """
     Запускает робота с того числа, которое необходимо ввести ниже.\n
     После запуска просмотрите строку вывода в вашем IDE. Спасибо.
@@ -58,8 +64,9 @@ async def start_robot_endpoint(start_from: int = 0): # Запуск робота
     return {"message": "Robot started"}
 
 
+# Остановка робота (Помещаем сообщение "stop" в очередь)
 @app.post("/stop_robot/", tags=["Работа с роботом"], summary="Остановка робота")
-async def stop_robot_endpoint(): # Остановка робота (Помещаем сообщение "stop" в очередь)
+async def stop_robot_endpoint(): 
     """
     Останавливает робота.\n
     После остановки просмотрите строку вывода в вашем IDE еще раз. Спасибо.
@@ -67,8 +74,10 @@ async def stop_robot_endpoint(): # Остановка робота (Помеща
     robot_queue.put_nowait("stop")   
     return {"message": "Robot stopping"}
 
+
+# Вывод информации о запусках робота
 @app.get("/robot_runs/", tags=["Информация о запусках робота"], summary="Получение информации о запусках робота")
-async def get_robot_runs():                    # Вывод информации о запусках робота
+async def get_robot_runs(): # Вывод информации о запусках робота
     """
     Выводит информацию о всех запусках робота.\n
     Нажмите кнопку Execute для получения подробной информации. Спасибо.
