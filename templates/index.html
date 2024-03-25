@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+    <h2>Добрый день! Меня зовут Станислав</h2>
+    <p>Это мое тестовое задание для ИТ-стажировки Гринатом (Python разработчик RPA)</p>
+    <p><a href="http://127.0.0.1:8000/docs">Ссылка на Swagger UI</a></p>
+
+    <h2>Все запуски робота</h2>
+    <table border="1" id="robotRunsTable">
+        <tr>
+            <th>ID</th>
+            <th>Start Time</th>
+            <th>Duration</th>
+            <th>Start From</th>
+        </tr>
+    </table>
+
+    <script>
+        // Функция для загрузки данных из базы данных и добавления их в таблицу
+        async function loadRobotRuns() {
+            const response = await fetch('/robot_runs/');
+            const data = await response.json();
+            const robotRunsTable = document.getElementById('robotRunsTable');
+
+            // Очистка таблицы перед добавлением новых данных
+            robotRunsTable.innerHTML = '<tr><th>Номер</th><th>Время запуска</th><th>Длительность</th><th>Число отсчета</th></tr>';
+
+            // Добавление данных в таблицу
+            data.robot_runs.forEach(run => {
+                const row = `<tr><td>${run[0]}</td><td>${run[1]}</td><td>${run[2]}</td><td>${run[3]}</td></tr>`;
+                robotRunsTable.innerHTML += row;
+            });
+        }
+
+        // Загрузка данных при загрузке страницы
+        window.onload = loadRobotRuns;
+    </script>
+
+</body>
+</html>
