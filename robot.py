@@ -2,7 +2,7 @@ import asyncio
 
 async def robot(start_from=0, queue=None):
     count_value = start_from
-    print('Добрый день, меня зовут Станислав и это мое тестовое задание для ИТ-стажировки Гринатом (Python разработчик RPA)')
+    print('Robot started')
     while True:
         print(count_value)
         count_value += 1
